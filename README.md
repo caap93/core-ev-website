@@ -1,25 +1,59 @@
-# CODING AGENTS: READ THIS FIRST
+# CORE EV — website & user portal
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Website and researcher portal for **CORE Extracellular Vesicles**, the EV core facility at Ghent University.
+Built from the Claude Design handoff in [`design/`](design/) (prototype, chat transcripts, design system).
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+- **Public site:** Home, About, Services, Equipment, Team, Resources (EV-TRACK, EVOKE, publications), Contact.
+- **User portal (researchers):** project progress timelines, shared files (upload, download, delete own), messages to the facility linked to a project.
+- **Admin area:** overview with instrument status, all projects with status filters, editable progress steps, file uploads (e.g. final reports), project creation, researcher invitations, and a messages inbox.
 
-## What you should do — IMPORTANT
+Stack: Next.js 16 (App Router, server actions), TypeScript, PostgreSQL + Drizzle ORM, bcrypt passwords with database-backed sessions, Nodemailer for email.
 
-**Read the chat transcripts first.** There are 5 chat transcript(s) in `chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+## Running locally
 
-**Read `project/index.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+```bash
+cp .env.example .env        # then edit: DATABASE_URL, ADMIN_PASSWORD, …
+npm install
+npm run dev                 # http://localhost:3000
+```
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+On startup the app applies database migrations and creates the admin account from
+`ADMIN_EMAIL` / `ADMIN_PASSWORD`, if that account doesn't exist yet (`src/lib/bootstrap.ts`).
+Later changes to `ADMIN_PASSWORD` don't affect an existing account; use “Forgot password?” instead.
 
-## About the design files
+Without `SMTP_HOST`, emails are written to the server log instead of being sent. Invite links are also shown to the admin in the portal, so onboarding still works.
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+## Deploying
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+```bash
+cp .env.example .env    # set APP_URL to the public URL, ADMIN_*, SMTP_*, POSTGRES_PASSWORD
+docker compose up -d --build
+```
 
-## Bundle contents
+This runs the app and PostgreSQL. Uploaded files live in the `uploads` volume and the database in `pgdata`; back up both.
+Put the app behind an HTTPS reverse proxy. Session cookies are `Secure` in production.
 
-- `README.md` — this file
-- `chats/` — conversation transcripts (read these!)
-- `project/` — the `CORE EV` project files (HTML prototypes, assets, components)
+## How accounts work
+
+1. The admin invites a researcher (**Users → Invite researcher**). An account is created as *pending* and an email with a set-password link (valid 7 days) is sent.
+2. The researcher sets a password, which activates the account and signs them in.
+3. The admin creates projects for the researcher (**Add project**), and the researcher gets an email.
+4. **Forgot password?** emails a reset link (valid 1 hour). Resetting signs the user out on all other devices.
+
+Tokens and session IDs are stored only as SHA-256 hashes. Passwords use bcrypt (cost 12). Sign-in is throttled after 8 failed attempts per email.
+Researchers can only see their own projects. Downloads and uploads are checked on the server (`src/app/api`).
+Uploads are limited to 50 MB per file and to document, data and image types (`src/lib/projects.ts`).
+
+## Scripts
+
+| Command | |
+|---|---|
+| `npm run dev` / `build` / `start` | Next.js |
+| `npm run lint` / `typecheck` / `test` | ESLint, TypeScript, Vitest unit tests |
+| `npm run db:generate` | Create a migration after editing `src/lib/db/schema.ts` |
+| `npm run db:migrate` | Apply migrations + seed admin manually |
+
+## Editing content
+
+All public-site text (services, equipment, team, publications, contact details) is in `src/lib/content.ts`.
+Images are in `public/images/`.
