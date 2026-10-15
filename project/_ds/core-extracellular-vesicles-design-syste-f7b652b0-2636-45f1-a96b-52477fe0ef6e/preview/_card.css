@@ -1,0 +1,13 @@
+/* Shared layout for Design System preview cards. Tokens come from ../colors_and_type.css */
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-text); background: var(--canvas); color: var(--ink); }
+.wrap { padding: 22px 24px; }
+.row { display: flex; gap: 16px; }
+.col { display: flex; flex-direction: column; gap: 14px; }
+.sw { flex: 1; min-width: 0; }
+.chip { height: 64px; border-radius: var(--r-md); border: 1px solid var(--border-alpha); }
+.name { margin-top: 10px; }
+.hex, .role { color: var(--ink-48); }
+.hex { margin-top: 2px; }
+.role { margin-top: 1px; }
+.muted { color: var(--ink-48); }

@@ -1,0 +1,163 @@
+/* ============================================================================
+   CORE Extracellular Vesicles — Foundations
+   colors_and_type.css
+
+   A photography-first, "museum gallery" design language adapted from an
+   Apple-style analysis. One interactive color (Action Blue), a near-black ink,
+   pure white + parchment canvases, and near-black tiles. UI chrome recedes so
+   the product (vials, instruments, EV renders) can speak.
+
+   Font: SF Pro is proprietary to Apple. On Apple platforms the
+   `-apple-system` / `system-ui` stack resolves to the real SF Pro. Everywhere
+   else we fall back to Inter (loaded in HTML from Google Fonts) — the closest
+   open-source match. See README "Note on font substitutes".
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   1. BASE TOKENS — raw values. Never reference hex directly in components;
+      use the semantic tokens in section 2.
+   --------------------------------------------------------------------------- */
+:root {
+  /* — Brand & accent — the single interactive color — */
+  --blue-action:       #0066cc;  /* every link, every pill CTA, focus root      */
+  --blue-focus:        #0071e3;  /* keyboard focus ring; selected chip border    */
+  --blue-on-dark:      #2997ff;  /* inline links ON dark tiles only              */
+
+  /* — Ink / text — */
+  --ink:               #1d1d1f;  /* headlines + body on light; dark utility fill */
+  --ink-80:            #333333;  /* body on pearl button surface                 */
+  --ink-48:            #7a7a7a;  /* disabled text, legal fine-print              */
+  --on-dark:           #ffffff;  /* text on dark tiles + global nav              */
+  --on-dark-muted:     #cccccc;  /* secondary copy on dark tiles                 */
+  --on-primary:        #ffffff;  /* text on Action Blue                          */
+
+  /* — Surfaces — */
+  --canvas:            #ffffff;  /* dominant canvas                              */
+  --parchment:         #f5f5f7;  /* signature off-white; footer; alt tile        */
+  --pearl:             #fafafc;  /* ghost-button fill                            */
+  --tile-1:            #272729;  /* primary dark tile                            */
+  --tile-2:            #2a2a2c;  /* micro-step lighter dark tile                 */
+  --tile-3:            #252527;  /* micro-step darker dark tile / video frames   */
+  --black:             #000000;  /* global nav, true void, video bg              */
+  --chip-translucent:  #d2d2d7;  /* base hex of translucent control chip         */
+
+  /* — Hairlines / borders — */
+  --divider-soft:      #f0f0f0;  /* soft ring on secondary buttons               */
+  --hairline:          #e0e0e0;  /* 1px border on utility cards + chips           */
+  --border-alpha:      rgba(0,0,0,0.08); /* live hairline tone                    */
+  --border-alpha-soft: rgba(0,0,0,0.04); /* secondary-button ring                 */
+
+  /* — The single shadow in the system. Product imagery only. — */
+  --shadow-product:    rgba(0,0,0,0.22) 3px 5px 30px 0;
+
+  /* — Translucent helpers — */
+  --chip-fill:         rgba(210,210,215,0.64); /* circular control over photo    */
+  --frost:             rgba(245,245,247,0.80);  /* sub-nav / sticky-bar blur fill */
+
+  /* ---------- Type families ---------- */
+  --font-display: "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  --font-text:    "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+
+  /* Inter needs a touch of negative tracking + ss03 to read like SF Pro.
+     Applied on .ds-inter-fallback when the system font is unavailable. */
+  --inter-features: "ss03" 1, "cv05" 1;
+
+  /* ---------- Weight ladder: 300 / 400 / 600 / 700. 500 is ABSENT. ---------- */
+  --w-light:  300;
+  --w-reg:    400;
+  --w-semi:   600;
+  --w-bold:   700;
+
+  /* ---------- Radii ---------- */
+  --r-none: 0px;
+  --r-xs:   5px;
+  --r-sm:   8px;
+  --r-md:   11px;
+  --r-lg:   18px;
+  --r-pill: 9999px;
+  --r-full: 9999px;
+
+  /* ---------- Spacing — base 8px ---------- */
+  --s-xxs:     4px;
+  --s-xs:      8px;
+  --s-sm:      12px;
+  --s-md:      17px;
+  --s-lg:      24px;
+  --s-xl:      32px;
+  --s-xxl:     48px;
+  --s-section: 80px;
+
+  /* ---------- Content widths ---------- */
+  --w-text:    980px;   /* text-heavy sections          */
+  --w-grid:    1440px;  /* product / utility grids       */
+
+  /* ---------- Heights ---------- */
+  --h-globalnav: 44px;
+  --h-subnav:    52px;
+  --h-stickybar: 64px;
+  --h-control:   44px;  /* min touch target              */
+}
+
+/* ---------------------------------------------------------------------------
+   2. SEMANTIC TYPE TOKENS
+      Each is a ready-to-use type style. Apply with the matching utility class
+      below, or copy the declarations. Display = SF Pro Display 600 + tight
+      tracking; Body = SF Pro Text 400 @ 17px. The boundary is unbreakable.
+   --------------------------------------------------------------------------- */
+:root {
+  /* hero-display */   --t-hero-size: 56px;  --t-hero-weight: 600; --t-hero-lh: 1.07; --t-hero-ls: -0.28px;
+  /* display-lg  */    --t-dlg-size: 40px;   --t-dlg-weight: 600;  --t-dlg-lh: 1.10;  --t-dlg-ls: 0;
+  /* display-md  */    --t-dmd-size: 34px;   --t-dmd-weight: 600;  --t-dmd-lh: 1.47;  --t-dmd-ls: -0.374px;
+  /* lead        */    --t-lead-size: 28px;  --t-lead-weight: 400; --t-lead-lh: 1.14; --t-lead-ls: 0.196px;
+  /* lead-airy   */    --t-leadairy-size: 24px; --t-leadairy-weight: 300; --t-leadairy-lh: 1.5; --t-leadairy-ls: 0;
+  /* tagline     */    --t-tag-size: 21px;   --t-tag-weight: 600;  --t-tag-lh: 1.19;  --t-tag-ls: 0.231px;
+  /* body-strong */    --t-bodys-size: 17px; --t-bodys-weight: 600; --t-bodys-lh: 1.24; --t-bodys-ls: -0.374px;
+  /* body        */    --t-body-size: 17px;  --t-body-weight: 400; --t-body-lh: 1.47;  --t-body-ls: -0.374px;
+  /* dense-link  */    --t-dense-size: 17px; --t-dense-weight: 400; --t-dense-lh: 2.41; --t-dense-ls: 0;
+  /* caption     */    --t-cap-size: 14px;   --t-cap-weight: 400;  --t-cap-lh: 1.43;  --t-cap-ls: -0.224px;
+  /* caption-strong */ --t-caps-size: 14px;  --t-caps-weight: 600; --t-caps-lh: 1.29; --t-caps-ls: -0.224px;
+  /* button-large */   --t-btnl-size: 18px;  --t-btnl-weight: 300; --t-btnl-lh: 1.0;  --t-btnl-ls: 0;
+  /* button-utility */ --t-btnu-size: 14px;  --t-btnu-weight: 400; --t-btnu-lh: 1.29; --t-btnu-ls: -0.224px;
+  /* fine-print  */    --t-fine-size: 12px;  --t-fine-weight: 400; --t-fine-lh: 1.0;  --t-fine-ls: -0.12px;
+  /* micro-legal */    --t-micro-size: 10px; --t-micro-weight: 400; --t-micro-lh: 1.3; --t-micro-ls: -0.08px;
+  /* nav-link    */    --t-nav-size: 12px;   --t-nav-weight: 400;  --t-nav-lh: 1.0;   --t-nav-ls: -0.12px;
+}
+
+/* ---------------------------------------------------------------------------
+   3. TYPE UTILITY CLASSES
+   --------------------------------------------------------------------------- */
+.t-hero      { font-family: var(--font-display); font-size: var(--t-hero-size);    font-weight: var(--t-hero-weight);    line-height: var(--t-hero-lh);    letter-spacing: var(--t-hero-ls); }
+.t-display-lg{ font-family: var(--font-display); font-size: var(--t-dlg-size);     font-weight: var(--t-dlg-weight);     line-height: var(--t-dlg-lh);     letter-spacing: var(--t-dlg-ls); }
+.t-display-md{ font-family: var(--font-text);    font-size: var(--t-dmd-size);     font-weight: var(--t-dmd-weight);     line-height: var(--t-dmd-lh);     letter-spacing: var(--t-dmd-ls); }
+.t-lead      { font-family: var(--font-display); font-size: var(--t-lead-size);    font-weight: var(--t-lead-weight);    line-height: var(--t-lead-lh);    letter-spacing: var(--t-lead-ls); }
+.t-lead-airy { font-family: var(--font-text);    font-size: var(--t-leadairy-size); font-weight: var(--t-leadairy-weight); line-height: var(--t-leadairy-lh); letter-spacing: var(--t-leadairy-ls); }
+.t-tagline   { font-family: var(--font-display); font-size: var(--t-tag-size);     font-weight: var(--t-tag-weight);     line-height: var(--t-tag-lh);     letter-spacing: var(--t-tag-ls); }
+.t-body-strong{font-family: var(--font-text);    font-size: var(--t-bodys-size);   font-weight: var(--t-bodys-weight);   line-height: var(--t-bodys-lh);   letter-spacing: var(--t-bodys-ls); }
+.t-body      { font-family: var(--font-text);    font-size: var(--t-body-size);    font-weight: var(--t-body-weight);    line-height: var(--t-body-lh);    letter-spacing: var(--t-body-ls); }
+.t-dense-link{ font-family: var(--font-text);    font-size: var(--t-dense-size);   font-weight: var(--t-dense-weight);   line-height: var(--t-dense-lh);   letter-spacing: var(--t-dense-ls); }
+.t-caption   { font-family: var(--font-text);    font-size: var(--t-cap-size);     font-weight: var(--t-cap-weight);     line-height: var(--t-cap-lh);     letter-spacing: var(--t-cap-ls); }
+.t-caption-strong{font-family: var(--font-text); font-size: var(--t-caps-size);    font-weight: var(--t-caps-weight);    line-height: var(--t-caps-lh);    letter-spacing: var(--t-caps-ls); }
+.t-button-large{font-family: var(--font-text);   font-size: var(--t-btnl-size);    font-weight: var(--t-btnl-weight);    line-height: var(--t-btnl-lh);    letter-spacing: var(--t-btnl-ls); }
+.t-button-utility{font-family: var(--font-text); font-size: var(--t-btnu-size);    font-weight: var(--t-btnu-weight);    line-height: var(--t-btnu-lh);    letter-spacing: var(--t-btnu-ls); }
+.t-fine-print{ font-family: var(--font-text);    font-size: var(--t-fine-size);    font-weight: var(--t-fine-weight);    line-height: var(--t-fine-lh);    letter-spacing: var(--t-fine-ls); }
+.t-micro     { font-family: var(--font-text);    font-size: var(--t-micro-size);   font-weight: var(--t-micro-weight);   line-height: var(--t-micro-lh);   letter-spacing: var(--t-micro-ls); }
+.t-nav-link  { font-family: var(--font-text);    font-size: var(--t-nav-size);     font-weight: var(--t-nav-weight);     line-height: var(--t-nav-lh);     letter-spacing: var(--t-nav-ls); }
+
+/* ---------------------------------------------------------------------------
+   4. SEMANTIC HTML DEFAULTS — opt in by wrapping content in .ds-prose, so this
+      file can be dropped into any page without hijacking global tags.
+   --------------------------------------------------------------------------- */
+.ds-prose h1 { font-family: var(--font-display); font-size: var(--t-hero-size); font-weight: var(--w-semi); line-height: var(--t-hero-lh); letter-spacing: var(--t-hero-ls); color: var(--ink); margin: 0 0 var(--s-lg); }
+.ds-prose h2 { font-family: var(--font-display); font-size: var(--t-dlg-size);  font-weight: var(--w-semi); line-height: var(--t-dlg-lh);  letter-spacing: var(--t-dlg-ls); color: var(--ink); margin: 0 0 var(--s-md); }
+.ds-prose h3 { font-family: var(--font-text);    font-size: var(--t-dmd-size);  font-weight: var(--w-semi); line-height: var(--t-dmd-lh);  letter-spacing: var(--t-dmd-ls); color: var(--ink); margin: 0 0 var(--s-sm); }
+.ds-prose p  { font-family: var(--font-text);    font-size: var(--t-body-size); font-weight: var(--w-reg);  line-height: var(--t-body-lh); letter-spacing: var(--t-body-ls); color: var(--ink); margin: 0 0 var(--s-md); }
+.ds-prose a  { color: var(--blue-action); text-decoration: none; }
+.ds-prose a:hover { text-decoration: underline; }
+.ds-prose small { font-family: var(--font-text); font-size: var(--t-fine-size); color: var(--ink-48); }
+
+/* ---------------------------------------------------------------------------
+   5. SYSTEM-WIDE MICRO-INTERACTION — the only press state. Apply .press to any
+      button. Default + Active only; hover is deliberately undocumented.
+   --------------------------------------------------------------------------- */
+.press { transition: transform 0.18s cubic-bezier(0.4, 0, 0.6, 1); }
+.press:active { transform: scale(0.95); }
