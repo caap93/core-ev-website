@@ -463,3 +463,10 @@ a.row-card:hover { border-color: var(--blue); }
   .user-row-actions { width: 100%; justify-content: flex-start; }
   .modal { padding: 26px 22px; }
 }
+
+/* Long-form text pages (privacy notice) */
+.prose a { color: var(--blue); }
+.prose a:hover { text-decoration: underline; }
+.prose ul { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.form-note { font-size: 12px; color: var(--ink48); line-height: 1.5; }
+.form-note a { color: var(--blue); }

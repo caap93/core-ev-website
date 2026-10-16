@@ -52,6 +52,11 @@ export async function TokenScreen({ token, mode }: { token: string; mode: 'invit
             </div>
           </div>
           <NewPasswordForm token={token} mode={mode} />
+          {mode === 'invite' && (
+            <p className="form-note" style={{ marginTop: 16, textAlign: 'center' }}>
+              By activating your account you acknowledge our <a href="/privacy" target="_blank">privacy notice</a>.
+            </p>
+          )}
         </div>
       </div>
     </div>

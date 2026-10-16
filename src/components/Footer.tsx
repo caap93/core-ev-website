@@ -28,7 +28,10 @@ export function Footer() {
         </div>
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} CORE Extracellular Vesicles. All rights reserved.</span>
-          <a href="https://www.ugent.be/en" target="_blank" rel="noopener noreferrer">Ghent University</a>
+          <div style={{ display: 'flex', gap: 20 }}>
+            <Link href="/privacy">Privacy</Link>
+            <a href="https://www.ugent.be/en" target="_blank" rel="noopener noreferrer">Ghent University</a>
+          </div>
         </div>
       </div>
     </footer>

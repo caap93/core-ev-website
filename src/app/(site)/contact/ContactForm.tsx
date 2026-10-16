@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useActionState, useState } from 'react';
 import { sendContactMessage, type FormState } from '@/actions/contact';
 import { Button } from '@/components/Button';
@@ -58,6 +59,7 @@ export function ContactForm() {
         <input id="c-website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
       {state.error && <div className="alert-error" role="alert">{state.error}</div>}
+      <p className="form-note">We use your details only to answer your message. See our <Link href="/privacy">privacy notice</Link>.</p>
       <Button type="submit" disabled={pending} style={{ alignSelf: 'flex-start', marginTop: 8 }}>
         {pending ? 'Sending…' : 'Send message'}
       </Button>
