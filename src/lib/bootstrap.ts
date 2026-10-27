@@ -1,7 +1,6 @@
-import path from 'node:path';
 import { eq } from 'drizzle-orm';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { db, schema } from './db';
+import { runMigrations } from './migrate';
 import { hashPassword } from './password';
 import { INSTRUMENTS } from './content';
 
@@ -10,7 +9,7 @@ import { INSTRUMENTS } from './content';
  * doesn't exist yet, and seeds the instrument list. Safe to run on every start.
  */
 export async function bootstrap() {
-  await migrate(db, { migrationsFolder: path.join(process.cwd(), 'drizzle') });
+  await runMigrations();
 
   const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const password = process.env.ADMIN_PASSWORD;

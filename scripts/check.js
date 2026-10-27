@@ -40,13 +40,10 @@ async function main() {
         await client.connect();
         ok(`Connected to database "${decodeURIComponent(parsed.pathname.slice(1))}" as "${decodeURIComponent(parsed.username)}"`);
         const { rows: [p] } = await client.query(`select
-          has_database_privilege(current_database(), 'CREATE') as can_create_schema,
           has_schema_privilege('public', 'CREATE') as can_create_tables,
           to_regclass('public.users') is not null as has_tables,
           current_setting('server_version') as version`);
         ok(`PostgreSQL ${p.version}`);
-        if (p.can_create_schema) ok('Database user may create schemas');
-        else bad('Database user may not create schemas in this database', 'In Plesk → Databases → User Management, give the user full (read and write) access to this database.');
         if (p.can_create_tables) ok('Database user may create tables');
         else bad('Database user may not create tables (schema "public")', 'Send this message to Claude — it can be fixed with one database command.');
         if (p.has_tables) {
