@@ -2,18 +2,23 @@
   "name": "core-ev",
   "version": "1.0.0",
   "private": true,
-  "description": "CORE EV — Extracellular Vesicle Core Facility website and user portal",
+  "description": "CORE EV \u2014 Extracellular Vesicle Core Facility website and user portal",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node app.js",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.tools.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "test": "vitest run"
   },
   "dependencies": {
+    "@types/node": "^26.6.5",
+    "@types/nodemailer": "^8.0.2",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.4",
     "next": "^16.4.1",
@@ -22,20 +27,18 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "server-only": "^0.0.1",
+    "typescript": "^6.0.3",
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
-    "@types/nodemailer": "^8.0.2",
-    "@types/pg": "^8.23.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
     "dotenv": "^18.0.8",
     "drizzle-kit": "^0.31.11",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.1",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3",
     "vitest": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=20.9"
   }
 }

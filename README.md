@@ -23,7 +23,24 @@ Later changes to `ADMIN_PASSWORD` don't affect an existing account; use “Forgo
 
 Without `SMTP_HOST`, emails are written to the server log instead of being sent. Invite links are also shown to the admin in the portal, so onboarding still works.
 
-## Deploying
+## Deploying on Plesk (Node.js)
+
+In Plesk, open the domain → **Node.js**, and set:
+
+| Setting | Value |
+|---|---|
+| Node.js Version | 24.x (LTS) |
+| Application Root | `/httpdocs` (where the code from GitHub is deployed) |
+| **Document Root** | **`/httpdocs/public`** — never the application root, or the `.env` file would be downloadable |
+| Application Mode | production |
+| Application Startup File | `app.js` |
+| Custom environment variables | everything from `.env.example` (`APP_URL`, `DATABASE_URL`, `ADMIN_*`, `SMTP_*`, …) |
+
+Then click **NPM install**, run the script **`build`**, and **Restart App**.
+After every new deployment from GitHub, run NPM install → `build` → Restart App again.
+Uploaded files go to `UPLOAD_DIR` (default `./uploads` in the application root, outside the document root).
+
+## Deploying with Docker
 
 ```bash
 cp .env.example .env    # set APP_URL to the public URL, ADMIN_*, SMTP_*, POSTGRES_PASSWORD
