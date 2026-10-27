@@ -6,6 +6,7 @@ const next = require('next');
 
 process.env.NODE_ENV = 'production';
 const dir = __dirname;
+process.chdir(dir); // relative paths (e.g. UPLOAD_DIR=./uploads) resolve inside the app folder
 require('@next/env').loadEnvConfig(dir);
 
 const app = next({ dev: false, dir });
