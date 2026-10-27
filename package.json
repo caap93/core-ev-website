@@ -2,7 +2,7 @@
   "name": "core-ev",
   "version": "1.0.0",
   "private": true,
-  "description": "CORE EV \u2014 Extracellular Vesicle Core Facility website and user portal",
+  "description": "CORE EV — Extracellular Vesicle Core Facility website and user portal",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.tools.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check": "node scripts/check.js"
   },
   "dependencies": {
     "@types/node": "^26.6.5",
