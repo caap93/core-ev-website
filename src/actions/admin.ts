@@ -169,3 +169,9 @@ export async function setMessageRead(messageId: number, read: boolean) {
   await db.update(schema.messages).set({ readAt: read ? new Date() : null }).where(eq(schema.messages.id, messageId));
   revalidatePath('/portal', 'layout');
 }
+
+export async function deleteMessage(messageId: number) {
+  await requireAdmin();
+  await db.delete(schema.messages).where(eq(schema.messages.id, messageId));
+  revalidatePath('/portal', 'layout');
+}

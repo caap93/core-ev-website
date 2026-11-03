@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth';
 import { listMessages } from '@/lib/queries';
-import { ReadToggle } from '../AdminControls';
+import { DeleteMessageButton, ReadToggle } from '../AdminControls';
 
 export const metadata: Metadata = { title: 'Messages' };
 
@@ -31,7 +31,10 @@ export default async function AdminMessagesPage() {
                   <div className="message-meta">
                     {m.source === 'portal' ? 'Portal' : 'Website'} · {m.createdAt.toISOString().slice(0, 16).replace('T', ' ')}
                   </div>
-                  <ReadToggle id={m.id} read={!!m.readAt} />
+                  <div style={{ display: 'flex', gap: 14, justifyContent: 'flex-end' }}>
+                    <ReadToggle id={m.id} read={!!m.readAt} />
+                    <DeleteMessageButton id={m.id} subject={m.subject} />
+                  </div>
                 </div>
               </div>
               {m.project && (

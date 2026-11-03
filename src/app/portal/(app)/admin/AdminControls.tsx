@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { addStep, deleteProject, removeStep, setInstrumentStatus, setMessageRead, toggleStep, updateProjectStatus } from '@/actions/admin';
+import { addStep, deleteMessage, deleteProject, removeStep, setInstrumentStatus, setMessageRead, toggleStep, updateProjectStatus } from '@/actions/admin';
 import { Icon } from '@/components/Icon';
 import { INSTRUMENT_COLORS, INSTRUMENT_STATUSES, PROJECT_STATUSES, statusColor, stepDateLabels } from '@/lib/projects';
 
@@ -83,6 +83,16 @@ export function ReadToggle({ id, read }: { id: number; read: boolean }) {
   return (
     <button type="button" className="link-btn" style={{ fontSize: 12 }} disabled={pending} onClick={() => start(() => setMessageRead(id, !read))}>
       {read ? 'Mark as unread' : 'Mark as read'}
+    </button>
+  );
+}
+
+export function DeleteMessageButton({ id, subject }: { id: number; subject: string }) {
+  const [pending, start] = useTransition();
+  return (
+    <button type="button" className="link-btn" style={{ fontSize: 12, color: 'var(--red)' }} disabled={pending}
+      onClick={() => { if (window.confirm(`Delete the message “${subject}”? This can't be undone.`)) start(() => deleteMessage(id)); }}>
+      {pending ? 'Deleting…' : 'Delete'}
     </button>
   );
 }
