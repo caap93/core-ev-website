@@ -13,6 +13,8 @@ function getTransport() {
     port: env.smtp.port,
     secure: env.smtp.secure,
     auth: env.smtp.user ? { user: env.smtp.user, pass: env.smtp.password } : undefined,
+    // Only for a mail server on the same machine whose certificate is issued for another name.
+    tls: process.env.SMTP_IGNORE_TLS_ERRORS === 'true' ? { rejectUnauthorized: false } : undefined,
   });
   return transport;
 }

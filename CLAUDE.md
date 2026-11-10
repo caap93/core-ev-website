@@ -16,7 +16,7 @@ Next.js 16 (App Router, server actions) + TypeScript + PostgreSQL (Drizzle ORM).
 - **Design reference:** `design/` holds the original Claude Design prototype and chat transcripts. Match its look (tokens and classes in `src/app/globals.css`).
 
 ## Hosting: Plesk (Combell server), Node.js 24.21.0
-- Test domain for now: `determined-mirzakhani.136-144-240-124.plesk.page` (plain http). A real domain is coming.
+- Domain: **`www.coreev.be`** (`APP_URL=https://www.coreev.be`). Old test address: `determined-mirzakhani.136-144-240-124.plesk.page`.
 - Plesk deploys from GitHub **`main`** (repo `caap93/core-ev-website`). Push finished work to `main`.
 - Application root `/httpdocs`, **document root `/httpdocs/public`** (must stay that way, or `.env` becomes downloadable), startup file `app.js`, production mode.
 - Settings live in **`/httpdocs/.env` on the server** (not in git). Plesk's "Custom environment variables" are *not* passed to "Run Node.js commands", which is why the file is used instead.
@@ -27,7 +27,7 @@ Next.js 16 (App Router, server actions) + TypeScript + PostgreSQL (Drizzle ORM).
 2. **Node.js → Run Node.js commands** → `run build` (run `install` first only if `package.json` dependencies changed)
 3. **Dashboard** → **Restart App**
 
-`run check` (in that same command box) diagnoses setup problems in plain language (`scripts/check.js`).
+`run check` (in that same command box) diagnoses setup problems in plain language (`scripts/check.js`): build, settings, database, email (SMTP login, never shows the password) and the upload folder.
 
 ## Gotchas already solved (don't undo them)
 - The Plesk database user can't `CREATE SCHEMA`, so `src/lib/migrate.ts` replaces Drizzle's migrator and tracks migrations in the `__core_ev_migrations` table.
@@ -42,8 +42,7 @@ Next.js 16 (App Router, server actions) + TypeScript + PostgreSQL (Drizzle ORM).
 `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`. For portal changes, also try the flow in a browser against a local PostgreSQL.
 
 ## Open items
-- **Email:** no SMTP yet, so nothing is sent (mails are logged; invite links are shown to the admin). Plan: a mailbox on the server's domain, SMTP settings in `.env` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM`); facility mail already goes to `FACILITY_INBOX=evcore@ugent.be`.
-- **Real domain + SSL:** when ready, enable Let's Encrypt in Plesk, set `APP_URL=https://…`, restart.
+- **Email:** being set up: a Plesk mailbox on coreev.be (it forwards incoming mail to UGent). SMTP settings go in `.env` (`SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` = same address as `SMTP_USER`). `SMTP_IGNORE_TLS_ERRORS=true` is only for a mail server on the same machine with a certificate for another name. Without `SMTP_HOST`, nothing is sent (mails are logged; invite links are shown to the admin). Facility mail goes to `FACILITY_INBOX=evcore@ugent.be`. For deliverability, set up DKIM/SPF.
 - `ADMIN_PASSWORD` in `.env` is only used to create the first admin; it can be removed from `.env` now.
 - **Privacy notice** (`src/app/(site)/privacy/page.tsx`) is a standard template; its retention periods await his review.
 - `npm install` reports 5 moderate advisories in build-time tooling. Don't run `npm audit fix --force`.

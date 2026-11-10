@@ -11,6 +11,47 @@ let problems = 0;
 const ok = (msg) => console.log(`  OK    ${msg}`);
 const bad = (msg, fix) => { problems++; console.log(`  ERROR ${msg}`); if (fix) console.log(`        → ${fix}`); };
 
+// Email (SMTP): shows what the site sees (never the password) and tries to log in.
+async function checkEmail() {
+  const host = process.env.SMTP_HOST;
+  if (!host) {
+    bad('Email is not set up: SMTP_HOST is missing, so no emails are sent', 'Add the SMTP_… lines to the .env file, save it, then Restart App.');
+    return;
+  }
+  const port = Number(process.env.SMTP_PORT || 587);
+  const secure = process.env.SMTP_SECURE === 'true';
+  const user = process.env.SMTP_USER || '';
+  console.log(`  INFO  Email settings: server ${host}, port ${port}, ${secure ? 'SSL/TLS' : 'STARTTLS'}, user "${user || '(none)'}", password ${process.env.SMTP_PASSWORD ? 'set' : 'MISSING'}`);
+  if (!user || !process.env.SMTP_PASSWORD) bad('SMTP_USER or SMTP_PASSWORD is missing', 'Use the full mailbox address as SMTP_USER and its password as SMTP_PASSWORD.');
+  if (port === 465 && !secure) bad('Port 465 needs SMTP_SECURE=true');
+  if (port === 587 && secure) bad('Port 587 needs SMTP_SECURE=false');
+  const from = process.env.MAIL_FROM || '';
+  if (user && from && !from.toLowerCase().includes(user.toLowerCase())) {
+    bad(`MAIL_FROM (${from}) is not the same address as SMTP_USER`, 'Mail servers often reject that. Use: MAIL_FROM="CORE EV <' + user + '>"');
+  }
+
+  const nodemailer = require('nodemailer');
+  const t = nodemailer.createTransport({
+    host, port, secure,
+    auth: user ? { user, pass: process.env.SMTP_PASSWORD } : undefined,
+    tls: process.env.SMTP_IGNORE_TLS_ERRORS === 'true' ? { rejectUnauthorized: false } : undefined,
+    connectionTimeout: 10000, greetingTimeout: 10000,
+  });
+  try {
+    await t.verify();
+    ok('Logged in to the mail server — emails can be sent');
+  } catch (err) {
+    const msg = String(err.message || err);
+    let fix = 'Send this message to Claude.';
+    if (err.code === 'EAUTH') fix = 'Wrong mailbox address or password. Check them in Plesk → Mail, and that "Mailbox" is ticked for this address.';
+    else if (['ECONNREFUSED', 'ETIMEDOUT', 'ECONNECTION'].includes(err.code) || /ECONNREFUSED|ETIMEDOUT|timeout/i.test(msg)) fix = 'The mail server is not reachable on this port. Check SMTP_HOST and SMTP_PORT (try 587 with SMTP_SECURE=false, or 465 with SMTP_SECURE=true).';
+    else if (err.code === 'EDNS' || /ENOTFOUND/.test(msg)) fix = 'That mail server name does not exist. Check SMTP_HOST (Plesk → Mail → mail client setup).';
+    else if (/certificate|altnames|self.signed/i.test(msg)) fix = 'The mail server\'s certificate does not match its name. Use the server name the certificate is for, or — only if the mail server runs on this same Plesk server — add SMTP_IGNORE_TLS_ERRORS=true.';
+    else if (/wrong version number|ssl3_get_record|EPROTO/i.test(msg)) fix = 'Encryption setting does not match the port: use 587 with SMTP_SECURE=false, or 465 with SMTP_SECURE=true.';
+    bad(`Cannot log in to the mail server: ${msg}`, fix);
+  }
+}
+
 async function main() {
   console.log('\nCORE EV setup check\n');
 
@@ -67,6 +108,8 @@ async function main() {
       }
     }
   }
+
+  await checkEmail();
 
   const uploadDir = path.resolve(process.env.UPLOAD_DIR || './uploads');
   try {
